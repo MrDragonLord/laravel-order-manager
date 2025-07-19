@@ -18,28 +18,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(10)->create();
-
-        $warehouses = Warehouse::factory(25)->create();
-
-        $products = Product::factory(80)->create();
+        User::factory(5)->create();
+        $warehouses = Warehouse::factory(5)->create();
+        $products = Product::factory(20)->create();
 
         foreach ($warehouses as $warehouse) {
             foreach ($products as $product) {
                 Stock::factory()->create([
                     'warehouse_id' => $warehouse->id,
                     'product_id'   => $product->id,
+                    'stock'        => rand(1, 100),
                 ]);
             }
 
-            $orders = Order::factory(10)->create([
+            $orders = Order::factory(rand(3, 5))->create([
                 'warehouse_id' => $warehouse->id,
             ]);
 
             foreach ($orders as $order) {
-                OrderItem::factory(rand(5, 15))->create([
-                    'order_id' => $order->id,
-                ]);
+                OrderItem::factory(rand(2, 5))
+                    ->create([
+                        'order_id'   => $order->id,
+                        'product_id' => $products->random()->id,
+                    ]);
             }
         }
     }

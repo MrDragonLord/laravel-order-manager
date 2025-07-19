@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+
 /**
  * Class Product
  *
@@ -14,6 +16,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property float                $price
  * @property \Carbon\Carbon|null  $created_at
  * @property \Carbon\Carbon|null  $updated_at
+ *
+ * @property-read Stock $stock
  */
 class Product extends Model
 {
@@ -29,4 +33,12 @@ class Product extends Model
         'name',
         'price',
     ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function stock(): HasOne
+    {
+        return $this->hasOne(Stock::class, 'product_id');
+    }
 }
