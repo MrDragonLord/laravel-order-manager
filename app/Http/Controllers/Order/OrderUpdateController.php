@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Order;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderUpdateRequest;
 use App\Http\Resources\OrderResource;
+use App\Models\Movement;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Stock;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 class OrderUpdateController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Изменение заказа (без статуса)
      *
      * @param OrderUpdateRequest $request
      * @param string $id
@@ -53,6 +54,7 @@ class OrderUpdateController extends Controller
 
                 $now = now();
                 $insertItems = [];
+                $movementData = [];
 
                 foreach ($data['items'] as $item) {
                     $productId = $item['product_id'];
@@ -68,6 +70,18 @@ class OrderUpdateController extends Controller
                     }
 
                     $stock->decrement('stock', $count);
+                    $delta = $count * -1;
+
+                    $movementData[] = [
+                        'warehouse_id'    => $stock->warehouse_id,
+                        'product_id'      => $productId,
+                        'quantity_change' => $delta,
+                        'balance_after'   => $stock->stock - $delta,
+                        'type'            => 'sale',
+                        'note'            => "Order #{$order->id}",
+                        'created_at'      => $now,
+                        'updated_at'      => $now,
+                    ];
 
                     $insertItems[] = [
                         'order_id'   => $order->id,
@@ -78,7 +92,13 @@ class OrderUpdateController extends Controller
                     ];
                 }
 
-                OrderItem::insert($insertItems);
+                if (!empty($insertItems)) {
+                    OrderItem::insert($insertItems);
+                }
+
+                if (!empty($movementData)) {
+                    Movement::insert($movementData);
+                }
             }
 
             return new OrderResource($order->load(['warehouse', 'items', 'items.product', 'items.product.stock']));

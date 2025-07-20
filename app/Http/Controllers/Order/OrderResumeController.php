@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 class OrderResumeController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Возобнавление заказа
      *
      * @param string $id
      * @return OrderResource|AuthorizationException
@@ -42,10 +42,12 @@ class OrderResumeController extends Controller
                 }
             }
 
+            // Строим SQL CASE для массового обновления остатков
             $caseSql = collect($required)
                 ->map(fn($cnt, $pid) => "WHEN {$pid} THEN {$cnt}")
                 ->implode(' ');
 
+            // Обновляем все позиции на стоке одним запросом
             Stock::where('warehouse_id', $order->warehouse_id)
                 ->whereIn('product_id', $productIds)
                 ->update([

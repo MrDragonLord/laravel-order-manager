@@ -8,6 +8,11 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class StockController extends Controller
 {
+    /**
+     * Все склады
+     *
+     * @return AnonymousResourceCollection
+     */
     public function index(): AnonymousResourceCollection
     {
         $stocks = Stock::with('product')->get();

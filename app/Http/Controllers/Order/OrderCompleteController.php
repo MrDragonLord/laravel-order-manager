@@ -11,7 +11,11 @@ use Illuminate\Auth\Access\AuthorizationException;
 class OrderCompleteController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Завершение заказа
+     *
+     * @param string $id
+     * @return OrderResource|AuthorizationException
+     * @throws AuthorizationException
      */
     public function __invoke(string $id): OrderResource|AuthorizationException
     {

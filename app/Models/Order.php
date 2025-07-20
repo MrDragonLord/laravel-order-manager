@@ -83,6 +83,11 @@ class Order extends Model
         return $this->hasMany(OrderItem::class, 'order_id');
     }
 
+    /**
+     * @param Builder $query
+     * @param string|null $status
+     * @return Builder
+     */
     #[Scope]
     public function status(Builder $query, ?string $status): Builder
     {
@@ -91,6 +96,11 @@ class Order extends Model
             : $query;
     }
 
+    /**
+     * @param Builder $query
+     * @param string|null $customer
+     * @return Builder
+     */
     #[Scope]
     public function customer(Builder $query, ?string $customer): Builder
     {
@@ -99,6 +109,11 @@ class Order extends Model
             : $query;
     }
 
+    /**
+     * @param Builder      $query
+     * @param string|null  $from
+     * @return Builder
+     */
     #[Scope]
     protected function dateFrom(Builder $query, ?string $from): Builder
     {
@@ -107,6 +122,11 @@ class Order extends Model
             : $query;
     }
 
+    /**
+     * @param Builder      $query
+     * @param string|null  $to
+     * @return Builder
+     */
     #[Scope]
     protected function dateTo(Builder $query, ?string $to): Builder
     {

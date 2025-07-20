@@ -8,16 +8,37 @@ use App\Models\User;
 
 class OrderPolicy
 {
+    /**
+     * Заверешение
+     *
+     * @param User|null $user
+     * @param Order $order
+     * @return bool
+     */
     public function complete(?User $user, Order $order): bool
     {
         return $order->status === OrderStatusEnum::ACTIVE;
     }
 
+    /**
+     * Отмена
+     *
+     * @param User|null $user
+     * @param Order $order
+     * @return bool
+     */
     public function cancel(?User $user, Order $order): bool
     {
         return $order->status === OrderStatusEnum::ACTIVE;
     }
 
+    /**
+     * Возобновление
+     *
+     * @param User|null $user
+     * @param Order $order
+     * @return bool
+     */
     public function resume(?User $user, Order $order): bool
     {
         if ($order->status !== OrderStatusEnum::CANCELED) {

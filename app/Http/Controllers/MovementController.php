@@ -1,33 +1,33 @@
 <?php
 
-namespace App\Http\Controllers\Order;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\OrderResource;
-use App\Models\Order;
+use App\Http\Resources\MovementResource;
+use App\Models\Movement;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class OrderIndexController extends Controller
+class MovementController extends Controller
 {
     /**
-     * Список товаров
+     * History movement
      *
      * @param Request $request
      * @return JsonResponse
      */
-    public function __invoke(Request $request): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         $limit = (int) $request->query('limit', 15);
 
-        $paginator = Order::with(['warehouse', 'items', 'items.product', 'items.product.stock'])
-            ->status($request->query('status'))
-            ->customer($request->query('customer'))
+        $paginator = Movement::with(['warehouse', 'product'])
+            ->scopeWarehouse($request->query('warehouse_id'))
+            ->scopeProduct($request->query('product_id'))
             ->dateFrom($request->query('date_from'))
             ->dateTo($request->query('date_to'))
             ->paginate($limit);
 
-        $data = OrderResource::collection($paginator->items());
+        $data = MovementResource::collection($paginator->items());
 
         return response()->json([
             'data' => $data,

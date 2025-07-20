@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Http\Resources\StockResource;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read  Product   $product
  * @property-read  Warehouse $warehouse
  */
+#[ObservedBy([StockResource::class])]
 class Stock extends Model
 {
     /** @use HasFactory<\Database\Factories\StockFactory> */

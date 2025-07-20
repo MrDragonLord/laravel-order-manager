@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MovementController;
 use App\Http\Controllers\Order\OrderCancelController;
 use App\Http\Controllers\Order\OrderCompleteController;
 use App\Http\Controllers\Order\OrderIndexController;
@@ -35,3 +36,5 @@ Route::prefix('warehouses')->group(function () {
 });
 
 Route::get('stocks', [StockController::class, 'index']);
+
+Route::get('movements', [MovementController::class, 'index']);

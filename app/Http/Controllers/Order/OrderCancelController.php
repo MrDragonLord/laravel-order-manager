@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 class OrderCancelController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Отмена заказа
      *
      * @param string $id
      * @return OrderResource|AuthorizationException
@@ -31,10 +31,12 @@ class OrderCancelController extends Controller
             $productIds = $items->pluck('product_id')->all();
             $countsById = $items->pluck('count', 'product_id');
 
+            // CASE строку для SQL, чтобы обновить все стоки одним запросом
             $caseSql = collect($countsById)
-                ->map(fn($count, $pid) => "WHEN {$pid} THEN {$count}")
+                ->map(fn($count, $pid) => "WHEN $pid THEN $count")
                 ->implode(' ');
 
+            // обновление таблицы stocks - добавление товара обратно
             Stock::where('warehouse_id', $order->warehouse_id)
                 ->whereIn('product_id', $productIds)
                 ->update([
