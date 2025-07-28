@@ -13,6 +13,7 @@ class OrderPolicy
      *
      * @param User|null $user
      * @param Order $order
+     *
      * @return bool
      */
     public function complete(?User $user, Order $order): bool
@@ -25,6 +26,7 @@ class OrderPolicy
      *
      * @param User|null $user
      * @param Order $order
+     *
      * @return bool
      */
     public function cancel(?User $user, Order $order): bool
@@ -37,6 +39,7 @@ class OrderPolicy
      *
      * @param User|null $user
      * @param Order $order
+     *
      * @return bool
      */
     public function resume(?User $user, Order $order): bool

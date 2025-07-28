@@ -17,7 +17,7 @@ class OrderResumeController extends Controller
      *
      * @param string $id
      * @return OrderResource|AuthorizationException
-     * @throws AuthorizationException
+     * @throws AuthorizationException|\Throwable
      */
     public function __invoke(string $id): OrderResource|AuthorizationException
     {
@@ -30,7 +30,7 @@ class OrderResumeController extends Controller
             $productIds = $items->pluck('product_id')->all();
             $required   = $items->pluck('count', 'product_id');
 
-            $stocks = DB::table('stocks')
+            $stocks = Stock::query()
                 ->where('warehouse_id', $order->warehouse_id)
                 ->whereIn('product_id', $productIds)
                 ->lockForUpdate()
@@ -44,7 +44,7 @@ class OrderResumeController extends Controller
 
             // Строим SQL CASE для массового обновления остатков
             $caseSql = collect($required)
-                ->map(fn($cnt, $pid) => "WHEN {$pid} THEN {$cnt}")
+                ->map(fn($cnt, $pid) => "WHEN $pid THEN $cnt")
                 ->implode(' ');
 
             // Обновляем все позиции на стоке одним запросом
